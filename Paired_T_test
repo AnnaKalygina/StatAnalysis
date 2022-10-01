@@ -1,0 +1,44 @@
+library(ggplot2)
+library(Sleuth3)
+library(SMPracticals)
+summary(darwin)
+ex0428
+ex0428$Difference <- ex0428$Cross - ex0428$Self
+ex0428
+# The null hypothesis is when the mean difference equals zero
+ggplot(ex0428)
+sd(ex0428$Difference)
+nrow(ex0428)
+SE_ex0428 <- sd(ex0428$Difference)/sqrt(nrow(ex0428))
+T <- qt(0.95,nrow(ex0428)-1)
+Confidence_Interval_HB <- mean(ex0428$Difference)+ SE_ex0428*T
+Confidence_Interval_LB <- mean(ex0428$Difference)- SE_ex0428*T
+
+
+Confidence_Interval1 <- mean(ex0428$Difference)+ SE_ex0428*1.96
+Confidence_Interval2 <- mean(ex0428$Difference)- SE_ex0428*1.96
+
+if (0>Confidence_Interval_LB & 0<Confidence_Interval_HB) {
+  print ("The null hypothesis is accepted")
+} else {
+  print("The null is rejected")
+}
+
+Paired_T_Test <- function(dataset, CI){
+  dataset$Difference <- dataset[,1] - dataset[,2]
+  Mean_dataset <- mean(dataset$Difference)
+  SD <- sd(dataset$Difference)
+  SS <- nrow(dataset)
+  SE <- SD/sqrt(SS)
+  T <- qt(CI,SS-1)
+  Confidence_Interval_HB <- Mean_dataset+ SE*T
+  Confidence_Interval_LB <- Mean_dataset- SE*T
+  
+  if (0>Confidence_Interval_LB & 0<Confidence_Interval_HB) {
+    print ("The null hypothesis is accepted")
+  } else {
+    print("The null hypothesis is rejected")
+  }
+}
+
+Paired_T_Test(ex0428,0.95)
